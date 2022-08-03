@@ -2,7 +2,6 @@ package com.wizeline.academy.hangman.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.wizeline.academy.hangman.data.network.MoviesModel
 import com.wizeline.academy.hangman.data.network.WordModel
 import com.wizeline.academy.hangman.domain.GetUsersScoreUseCase
 import com.wizeline.academy.hangman.domain.GetWordUseCase

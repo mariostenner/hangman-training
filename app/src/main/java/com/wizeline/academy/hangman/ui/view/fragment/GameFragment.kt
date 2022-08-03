@@ -54,15 +54,26 @@ class GameFragment : Fragment() {
         val gameViewModel = ViewModelProvider(this)[GameViewModel::class.java]
         val navController = Navigation.findNavController(view)
         username = arguments?.get("username").toString()
+//
+//
+//        gameViewModel.getRandomWords().apply {
+//        timer.start()
+//        setObservers(gameViewModel,navController)
+//        setlistenersKeyBoard(gameViewModel)
+//        }
 
-
-        //binding.btnHint.setOnClickListener { alertDialog?.show() }
-        /**Trae las palabras random a la api y despues inicia el temporizador**/
-        gameViewModel.getRandomWords().apply {
-        timer.start()
-        setObservers(gameViewModel,navController)
-        setlistenersKeyBoard(gameViewModel)
+        /**** Rx Kotlin**/
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED){
+                gameViewModel.getRandomWords()
+            }
         }
+
+            timer.start()
+            setObservers(gameViewModel,navController)
+            setlistenersKeyBoard(gameViewModel)
+
+        /*****/
 
        alertDialog = parentFragment?.let {
             val builder = AlertDialog.Builder(it.context)
@@ -95,7 +106,7 @@ class GameFragment : Fragment() {
                     viewModel.counterIntents.collect{
                         if (it==10){
                             bindHangman(it)
-                            endGame(navController, viewModel)
+                            alertDialog?.show()
                         }
                         else
                         {
@@ -131,13 +142,10 @@ class GameFragment : Fragment() {
 
 
         binding.btnNext.setOnClickListener {
-            /** Agregar el borrado de informacion de las variables**/
-
             setEnabledButtons(true)
             viewModel.counterIntents.value = 0
-            //Toast.makeText(context,"Ya puedes avanzar", Toast.LENGTH_LONG).show()
-           // endGame(navController, viewModel)
             viewModel.pointerMovie.value += 1
+            /** DESCOMENTAR!!!!!s**/
             viewModel.getRandomWords()
             binding.btnNext.visibility = View.INVISIBLE
             binding.btnHint.visibility = View.VISIBLE
